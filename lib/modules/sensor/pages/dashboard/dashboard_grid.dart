@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rtdb/helpers/constants.dart';
+import 'package:rtdb/helpers/shared_preference.dart';
 import 'package:rtdb/modules/sensor/models/live_view_data.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -16,14 +17,9 @@ class DashboardGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<String> deviceList;
-    List<String> hr;
-    List<String> steps;
-    List<String> acc;
-    List<String> res;
     return SingleChildScrollView(
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.9,
+        height: MediaQuery.of(context).size.height,
         child: ListView(
           children: [
             Column(
@@ -57,41 +53,46 @@ class UnKnownDevicesGrid extends StatelessWidget {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 for (var key in snapshot.data!.keys) {
-                  final databaseKey =
-                      FirebaseDatabase.instance.ref('data/$key');
+                  final databaseKey = FirebaseDatabase.instance.ref(
+                      'data/${StorageManager.getGatewayId()}/${key.substring(10)}');
 
                   var metrics = snapshot.data![key]!.metricsData;
+                  Duration sessionDuration =
+                      Duration(seconds: metrics?.relativeTime ?? 0);
                   var sessionStatus =
                       snapshot.data![key]!.metricsData?.sessionStatus;
                   if (sessionStatus == SessionStatus.running) {
+                    // print(snapshot.data![key]!.metricsData!.relativeTime);
                     databaseKey.update({
-                      "Beaconing Data": {
-                        "hr": metrics?.hr,
-                        "acc": metrics?.acceleration,
-                        "StepCount": metrics?.stepCount
-                      }
+                      "beaconData": {
+                        "sessionActive": true,
+                        "metrics": {
+                          "movementLoad": metrics?.acceleration,
+                          "heartRate": metrics?.hr,
+                          "stepCount": metrics?.stepCount,
+                          "rssi": snapshot.data![key]!.device.rssi,
+                          "battery": metrics?.battery,
+                          "relativeTime":
+                              "${sessionDuration.inHours}h ${sessionDuration.inMinutes % 60}m ${sessionDuration.inSeconds % 60}s",
+                        },
+                      },
+                      "lastUpdatedTime": DateTime.now().millisecondsSinceEpoch,
                     });
                   } else {
-                    databaseKey.update({"Beaconing Data": "Not running"});
+                    databaseKey.update({
+                      "beaconData": {
+                        "sessionActive": false,
+                        "metrics": {},
+                      },
+                      "lastUpdatedTime": DateTime.now().millisecondsSinceEpoch,
+                    });
                   }
                 }
               }
-              return Text("Data from RTDB");
+              return Container();
             }),
-        const ViewData(),
+        ViewData(gatewayStatus: "Gateway running",gatewayId: "${StorageManager.getGatewayId()}",),
       ],
     );
-  }
-
-  Widget showUnknownDevices(LiveViewData liveViewData, int index) {
-    if (liveViewData.deviceStatus != null) {
-      if (liveViewData.deviceStatus == IdleDeviceStatus.notRunning) {
-        return Container(padding: EdgeInsets.all(15), child: Text(""));
-      } else {
-        return Container(padding: EdgeInsets.all(15), child: Text("offline"));
-      }
-    } else {
-      return Container();
-    }
   }
 }

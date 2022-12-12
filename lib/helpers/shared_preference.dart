@@ -28,6 +28,13 @@ class StorageManager {
   static String? getDeviceLayout() =>
       _prefsInstance?.getString(UserDefaultKeys.deviceDetails);
 
+  static Future<bool?> setGatewayId(String value) async =>
+      await _prefsInstance?.setString('gateway_id', value);
+
+  static String? getGatewayId() =>
+      _prefsInstance?.getString('gateway_id');
+
+
   // static Future<bool?> setIdleDeviceDetails(String value) async =>
   //     await _prefsInstance?.setString(UserDefaultKeys.idleDeviceDetails, value);
   //

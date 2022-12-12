@@ -1,6 +1,7 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:rtdb/helpers/shared_preference.dart';
 import 'dashboard/home_screen.dart';
-
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -12,18 +13,16 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 3), () {
       Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => Dashboard()));
+          MaterialPageRoute(builder: (context) => const Dashboard()));
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body:Center(child: CircularProgressIndicator())
-    );
+    return const Scaffold(backgroundColor: Colors.black,
+        body: Center(child: CircularProgressIndicator(color: Colors.grey,)));
   }
 }

@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:rtdb/constants.dart';
+import 'package:rtdb/helpers/shared_preference.dart';
 import 'package:rtdb/modules/live_metrics/live_metrics_bloc.dart';
 import 'package:rtdb/modules/sensor/models/local_user_profile.dart';
-import 'package:rtdb/modules/sensor/pages/dashboard/dashboardGrid.dart';
+import 'package:rtdb/modules/sensor/pages/dashboard/card/viewdata.dart';
+import 'package:rtdb/modules/sensor/pages/dashboard/dashboard_grid.dart';
 import 'package:rtdb/modules/sensor/repository/ble_handler.dart';
 
 class Dashboard extends StatefulWidget {
@@ -22,7 +25,14 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
+    LiveMetricsBloc.instance.add(const BleErrorEvent());
     checkBleStatus();
+    String id = "";
+    for (int i = 0; i < 6; i++) {
+      var random = 65 + Random().nextInt(25);
+      id += String.fromCharCode(random);
+    }
+    if (StorageManager.getGatewayId() == null) StorageManager.setGatewayId(id);
   }
 
   @override
@@ -74,7 +84,23 @@ class _DashboardState extends State<Dashboard> {
                       //   child: Loading(),
                       // );
                       return Container();
+                    } else if (state is BluetoothTurnedOffState) {
+                      return const ViewData(
+                          gatewayStatus: "Turn on Bluetooth", gatewayId: "");
+                    } else if (state is LocationTurnedOffState) {
+                      return const ViewData(
+                          gatewayStatus: "Turn on Location", gatewayId: "");
+                    } else if (state is BleErrorState) {
+                      return const ViewData(
+                          gatewayStatus: "Checking Connectivity",
+                          gatewayId: "");
                     }
+                    else if(state is GatewayCreateState)
+                      {
+                        return const ViewData(
+                            gatewayStatus: "Creating gateway ID",
+                            gatewayId: "");
+                      }
 
                     /*  */
 
@@ -96,13 +122,16 @@ class _DashboardState extends State<Dashboard> {
       switch (status) {
         case BleStatus.ready:
           print("ready");
+          LiveMetricsBloc.instance.add(const GatewayCreateEvent());
           Future.delayed(const Duration(seconds: 1), () {
-            LiveMetricsBloc.instance.add(
-                const LiveMetricsSensorSearchEvent(deviceName: "212430003394"));
+            LiveMetricsBloc.instance
+                .add(const LiveMetricsSensorLiveViewEvent());
           });
           break;
         case BleStatus.poweredOff:
           print("off");
+          LiveMetricsBloc.instance.add(const BluetoothTurnedOffEvent());
+
           ///create a screen for bluetooth powered off state
           break;
         case BleStatus.unknown:
@@ -116,6 +145,7 @@ class _DashboardState extends State<Dashboard> {
           break;
         case BleStatus.locationServicesDisabled:
           print("loc off");
+          LiveMetricsBloc.instance.add(const LocationTurnedOffEvent());
           // TODO: Handle this case.
           break;
       }

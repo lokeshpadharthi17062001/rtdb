@@ -7,7 +7,7 @@ import 'package:rtdb/helpers/constants.dart';
 import 'package:rtdb/modules/live_metrics/bloc_helper.dart';
 import 'package:rtdb/modules/sensor/models/live_view_data.dart';
 import 'package:rtdb/modules/sensor/models/local_user_profile.dart';
-import 'package:rtdb/modules/sensor/pages/dashboard/dashboardGrid.dart';
+import 'package:rtdb/modules/sensor/pages/dashboard/dashboard_grid.dart';
 import 'package:rtdb/modules/sensor/repository/app_devices.dart';
 import 'package:rtdb/modules/sensor/repository/beacon_decoder.dart';
 import 'package:rtdb/modules/sensor/repository/ble_handler.dart';
@@ -17,6 +17,7 @@ import 'package:rtdb/modules/sensor/repository/session_handler.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'live_metrics_event.dart';
+
 part 'live_metrics_state.dart';
 
 class LiveMetricsBloc extends Bloc<LiveMetricsEvent, LiveMetricsState> {
@@ -38,8 +39,8 @@ class LiveMetricsBloc extends Bloc<LiveMetricsEvent, LiveMetricsState> {
   Map<String, dynamic> deviceTimeLagDetails = {};
 
   LiveMetricsBloc._internal() : super(LiveMetricsInitialState()) {
-    on<LiveMetricsSensorSearchEvent>((event, emit) async {
-      listenBeaconForDevice(event.deviceName);
+    on<LiveMetricsSensorLiveViewEvent>((event, emit) async {
+      listenBeaconForDevice();
 
       emit(LiveMetricsSensorLiveViewState());
     });
@@ -47,7 +48,18 @@ class LiveMetricsBloc extends Bloc<LiveMetricsEvent, LiveMetricsState> {
     on<LiveMetricsSensorStopEvent>((event, emit) async {
       stopSession();
     });
-
+    on<BluetoothTurnedOffEvent>((event, emit) async {
+      emit(BluetoothTurnedOffState());
+    });
+    on<LocationTurnedOffEvent>((event, emit) async {
+      emit(LocationTurnedOffState());
+    });
+    on<BleErrorEvent>((event, emit) async {
+      emit(BleErrorState());
+    });
+    on<GatewayCreateEvent>((event, emit) async {
+      emit(GatewayCreateState());
+    });
     on<LiveMetricsSensorRescanEvent>((event, emit) async {
       // rescanDevices();
     });
@@ -59,15 +71,15 @@ class LiveMetricsBloc extends Bloc<LiveMetricsEvent, LiveMetricsState> {
     return super.close();
   }
 
-  void listenBeaconForDevice(String deviceName) {
+  void listenBeaconForDevice() {
     BleHandler.instance.scanForDevices();
 
     BleHandler.instance.scanSubscription?.onData((device) {
-      showDevice(device, deviceName);
+      showDevice(device);
     });
   }
 
-  void showDevice(DiscoveredDevice device, String deviceName) {
+  void showDevice(DiscoveredDevice device) {
     if (device.name.startsWith('Movesense')) {
       showDeviceDetails(device);
     }
@@ -224,15 +236,15 @@ class LiveMetricsBloc extends Bloc<LiveMetricsEvent, LiveMetricsState> {
         BleHandler.instance.sensorInfoData?.sensorDetails.pendingReads;
   }
 
-  // void rescanDevices() {
-  //   unKnownDeviceStream.add(null);
-  //
-  //   LayoutHandler.instance.resetKnownDevices();
-  //
-  //   updateDeviceDetails();
-  //
-  //   BleHandler.instance.scanSubscription?.cancel();
-  //
-  //   add(const SensorSearchEvent());
-  // }
+// void rescanDevices() {
+//   unKnownDeviceStream.add(null);
+//
+//   LayoutHandler.instance.resetKnownDevices();
+//
+//   updateDeviceDetails();
+//
+//   BleHandler.instance.scanSubscription?.cancel();
+//
+//   add(const SensorSearchEvent());
+// }
 }

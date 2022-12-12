@@ -4,12 +4,11 @@ abstract class LiveMetricsEvent extends Equatable {
   const LiveMetricsEvent();
 }
 
-class LiveMetricsSensorSearchEvent extends LiveMetricsEvent {
-  final String deviceName;
-  const LiveMetricsSensorSearchEvent({required this.deviceName});
+class LiveMetricsSensorLiveViewEvent extends LiveMetricsEvent {
+  const LiveMetricsSensorLiveViewEvent();
 
   @override
-  List<Object> get props => [deviceName];
+  List<Object> get props => [];
 }
 
 class LiveMetricsSensorStopEvent extends LiveMetricsEvent {
@@ -21,6 +20,31 @@ class LiveMetricsSensorStopEvent extends LiveMetricsEvent {
 
 class LiveMetricsSensorRescanEvent extends LiveMetricsEvent {
   const LiveMetricsSensorRescanEvent();
+
+  @override
+  List<Object> get props => [];
+}
+class BluetoothTurnedOffEvent extends LiveMetricsEvent {
+  const BluetoothTurnedOffEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+class LocationTurnedOffEvent extends LiveMetricsEvent {
+  const LocationTurnedOffEvent();
+
+  @override
+  List<Object> get props => [];
+}
+class BleErrorEvent extends LiveMetricsEvent {
+  const BleErrorEvent();
+
+  @override
+  List<Object> get props => [];
+}
+class GatewayCreateEvent extends LiveMetricsEvent {
+  const GatewayCreateEvent();
 
   @override
   List<Object> get props => [];
