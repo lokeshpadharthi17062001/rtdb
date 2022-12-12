@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "885408556116",
-    "firebase_url": "https://rtdb-bf9d3-default-rtdb.firebaseio.com",
-    "project_id": "rtdb-bf9d3",
-    "storage_bucket": "rtdb-bf9d3.appspot.com"
+    "project_number": "850153006362",
+    "firebase_url": "https://conqurlive-default-rtdb.firebaseio.com",
+    "project_id": "conqurlive",
+    "storage_bucket": "conqurlive.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:885408556116:android:3ea6cd5d5a514b54c2b9c1",
+        "mobilesdk_app_id": "1:850153006362:android:d7e48873c21aa88bc4f8a3",
         "android_client_info": {
           "package_name": "com.example.rtdb"
         }
       },
       "oauth_client": [
         {
-          "client_id": "885408556116-98eplk9p482p5qk2e5dpcmj2ad0a2eot.apps.googleusercontent.com",
+          "client_id": "850153006362-18plrqvjiqm9du5tunplttvpnjacg3cc.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCFE6-wV1_CCFkURusT29DJWB3miIt4IDI"
+          "current_key": "AIzaSyDgr963qGn8Pl-Ex2Fs30tc66z_XPmW3IA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "885408556116-98eplk9p482p5qk2e5dpcmj2ad0a2eot.apps.googleusercontent.com",
+              "client_id": "850153006362-18plrqvjiqm9du5tunplttvpnjacg3cc.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
