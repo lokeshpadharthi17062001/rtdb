@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:rtdb_view/constant.dart';
 import 'package:rtdb_view/grid_view.dart';
 import 'package:rtdb_view/storage_manager.dart';
@@ -90,7 +89,7 @@ class _MyAppState extends State<MyApp> {
             const SizedBox(
               height: 15,
             ),
-            GridViewer(scrSize, fetchedData),
+            GridViewer(scrSize, fetchedData,subscr),
           ],
         ),
       ),
@@ -167,7 +166,7 @@ class _MyAppState extends State<MyApp> {
 
       }
     else
-      {
+      { 
         subscr!.cancel();
       }
   }

@@ -10,8 +10,9 @@ class AthleteCard extends StatefulWidget {
   final int index;
   final dynamic fetchedData;
   final String device;
+  final sub;
 
-  const AthleteCard(this.size, this.index, this.fetchedData, this.device,
+  const AthleteCard(this.size, this.index, this.fetchedData, this.device,this.sub,
       {super.key});
 
   @override
@@ -44,7 +45,7 @@ class _AthleteCardState extends State<AthleteCard> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: deviceNameText(),
+                  child: deviceNameText(widget.sub),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -261,7 +262,7 @@ class _AthleteCardState extends State<AthleteCard> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 8, left: 8),
-                  child: deviceNameText(),
+                  child: deviceNameText(widget.sub),
                 ),
                 const Expanded(
                     child: Align(
@@ -276,12 +277,13 @@ class _AthleteCardState extends State<AthleteCard> {
     );
   }
 
-  GestureDetector deviceNameText() {
+  GestureDetector deviceNameText(subscript) {
     Map mapData = json.decode(StorageManager.getUser() ?? "{}");
     String userName = "${mapData[widget.device] ?? widget.device}";
     userName=(userName=="")?widget.device:userName;
     return GestureDetector(
         onTap: () {
+          subscript.pause();
           setState(() {
             tap = true;
           });
@@ -298,6 +300,7 @@ class _AthleteCardState extends State<AthleteCard> {
                 style: const TextStyle(fontSize: 15),
                 autofocus: true,
                 onSubmitted: (val) {
+                  subscript.resume();
                     // if (val.isNotEmpty) {
                       String catchData = StorageManager.getUser() ?? "{}";
                       Map map = json.decode(catchData);

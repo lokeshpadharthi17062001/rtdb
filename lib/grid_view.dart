@@ -5,8 +5,9 @@ import 'constant.dart';
 class GridViewer extends StatefulWidget {
   final size;
   final data;
+  final sub;
 
-  GridViewer(this.size, this.data);
+  GridViewer(this.size, this.data,this.sub);
 
   @override
   State<GridViewer> createState() => _GridViewerState();
@@ -16,7 +17,6 @@ class _GridViewerState extends State<GridViewer> {
   @override
   Widget build(BuildContext context) {
     int cards=(widget.data != null) ? widget.data.length : 0;
-
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: GridView.builder(
@@ -25,7 +25,7 @@ class _GridViewerState extends State<GridViewer> {
           shrinkWrap: true,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 5 * widget.size.width ~/ 1280,
-              childAspectRatio: 1.3 * widget.size.width / 1280,
+              childAspectRatio: 1.3 * (widget.size.width / 1280)*(601/widget.size.height),
               mainAxisSpacing: 15,
               crossAxisSpacing: 10),
           itemBuilder: (context, index) {
@@ -35,7 +35,7 @@ class _GridViewerState extends State<GridViewer> {
             }
             // List<bool>tapped=List.filled(keys.length,false);
             return AthleteCard(
-                widget.size, index, widget.data[keys[index]], keys[index]);
+                widget.size, index, widget.data[keys[index]], keys[index],widget.sub);
           }),
     );
   }
